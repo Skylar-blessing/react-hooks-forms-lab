@@ -1,15 +1,33 @@
-import React from "react";
+import React, { useState } from 'react';
 
-function Filter({ onCategoryChange }) {
+function Filter({ categories, items, onCategoryChange, onSearchChange }) {
+  const [searchText, setSearchText] = useState('');
+
+  function handleSearchTextChange(event) {
+    setSearchText(event.target.value);
+    onSearchChange(event.target.value);
+  }
+
+  const filteredItems = items.filter(item => item.name.includes(searchText));
+
   return (
-    <div className="Filter">
-      <input type="text" name="search" placeholder="Search..." />
-      <select name="filter" onChange={onCategoryChange}>
-        <option value="All">Filter by category</option>
-        <option value="Produce">Produce</option>
-        <option value="Dairy">Dairy</option>
-        <option value="Dessert">Dessert</option>
+    <div>
+      <input type="text" value={searchText} onChange={handleSearchTextChange} />
+      <select onChange={onCategoryChange}>
+        <option value="All">All</option>
+        {categories.map(category => (
+          <option key={category} value={category}>
+            {category}
+          </option>
+        ))}
       </select>
+      <ul>
+        {filteredItems.map(item => (
+          <li key={item.id}>
+            {item.name} - {item.category}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

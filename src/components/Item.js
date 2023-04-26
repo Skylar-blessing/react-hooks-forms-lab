@@ -1,24 +1,54 @@
-import React, { useState } from "react";
+ItemForm.js
 
-function Item({ name, category }) {
-  const [isInCart, setIsInCart] = useState(false);
+import React, { useState } from 'react';
+import { v4 as uuid } from 'uuid'; // import the uuid library
 
-  function handleAddToCartClick() {
-    setIsInCart((isInCart) => !isInCart);
-  }
+function ItemForm({ categories, onItemFormSubmit }) {
+const [itemName, setItemName] = useState('');
+const [itemCategory, setItemCategory] = useState('Produce'); // set initial value to "Produce"
 
-  return (
-    <li className={isInCart ? "in-cart" : ""}>
-      <span>{name}</span>
-      <span className="category">{category}</span>
-      <button
-        className={isInCart ? "remove" : "add"}
-        onClick={handleAddToCartClick}
-      >
-        {isInCart ? "Remove From" : "Add to"} Cart
-      </button>
-    </li>
-  );
+function handleNameChange(event) {
+setItemName(event.target.value);
 }
 
-export default Item;
+function handleCategoryChange(event) {
+setItemCategory(event.target.value);
+}
+
+function handleSubmit(event) {
+event.preventDefault();
+
+const newItem = {
+  id: uuid(),
+  name: itemName,
+  category: itemCategory,
+};
+
+onItemFormSubmit(newItem);
+
+setItemName('');
+setItemCategory('Produce');
+}
+
+return (
+<form onSubmit={handleSubmit}>
+<label>
+Name:
+<input type="text" value={itemName} onChange={handleNameChange} />
+</label>
+<label>
+Category:
+<select value={itemCategory} onChange={handleCategoryChange}>
+{categories.map(category => (
+<option key={category} value={category}>
+{category}
+</option>
+))}
+</select>
+</label>
+<button type="submit">Add Item</button>
+</form>
+);
+}
+
+export default ItemForm;
